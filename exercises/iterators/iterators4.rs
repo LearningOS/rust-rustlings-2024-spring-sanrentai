@@ -15,6 +15,19 @@ pub fn factorial(num: u64) -> u64 {
     // For an extra challenge, don't use:
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
+    // 用下面的代码能通过测试，但我觉得不对
+    // if num<2 {
+    //     1
+    // } else if num==2 {
+    //     2
+    // } else {
+    //     24
+    // }
+    // 下面这个是用chatgpt生成的
+    (1..=num).product()
+    // 在 Rust 中，Iterator::product 是一个用于计算迭代器元素乘积的方法。
+    // 它可以应用于任何实现了 Iterator trait 的类型。
+    // 当你有一个迭代器产生的元素序列，并且想要计算它们的乘积时，你可以使用 product 方法。
 }
 
 #[cfg(test)]
