@@ -27,15 +27,23 @@
 //
 // You should NOT modify any existing code except for adding two lines of attributes.
 
-// I AM NOT DONE
+
 
 extern "Rust" {
     fn my_demo_function(a: u32) -> u32;
+    #[link_name = "my_demo_function"]
     fn my_demo_function_alias(a: u32) -> u32;
 }
 
 mod Foo {
     // No `extern` equals `extern "Rust"`.
+    // #[no_mangle] 属性用于告诉 Rust 编译器不要对函数名进行符号重整（mangling）。
+    // 符号重整是编译器为了支持函数重载和命名空间而对函数名称进行的一种转换，使得
+    // 它们在目标二进制文件中具有唯一的标识符。但是，在一些情况下，比如与其他语言进行交互时，
+    // 你可能需要直接使用原始的函数名称，而不是被编译器修改后的名称。
+    // 这时，你可以使用 #[no_mangle] 属性来禁止 Rust 编译器对函数名称进行符号重整，
+    // 确保它们在编译后的二进制文件中保持不变。
+    #[no_mangle]
     fn my_demo_function(a: u32) -> u32 {
         a
     }
