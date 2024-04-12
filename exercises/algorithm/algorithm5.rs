@@ -8,7 +8,7 @@ use std::collections::VecDeque;
 
 // Define a graph
 struct Graph {
-    adj: Vec<Vec<usize>>, 
+    adj: Vec<Vec<usize>>, // 邻接表 adj，用于存储图中每个顶点的相邻顶点列表
 }
 
 impl Graph {
@@ -26,11 +26,27 @@ impl Graph {
     }
 
     // Perform a breadth-first search on the graph, return the order of visited nodes
+    // 在图上执行广度优先搜索，并返回访问节点的顺序。
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
 		//TODO
+        let mut visited = vec![false; self.adj.len()]; // 用于标记节点是否已经被访问过
+        let mut visit_order = vec![]; // 用于保存访问节点的顺序
+        let mut queue = VecDeque::new(); // 用于存储待访问的节点
+        visited[start] = true; // 起点
+        queue.push_back(start);
+        while let Some(node) = queue.pop_front() {
+            visit_order.push(node);
 
-        let mut visit_order = vec![];
+            
+            for &adj_node in &self.adj[node] {
+                if !visited[adj_node] {
+                    // Mark the adjacent node as visited and enqueue it
+                    visited[adj_node] = true;
+                    queue.push_back(adj_node);
+                }
+            }
+        }
         visit_order
     }
 }
