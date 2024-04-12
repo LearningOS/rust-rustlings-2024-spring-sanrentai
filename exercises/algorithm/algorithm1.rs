@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T : Clone + PartialOrd> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Clone + PartialOrd> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,11 +72,38 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut merged_list = LinkedList::new();
+        
+        let mut node_a = list_a.start;
+        let mut node_b = list_b.start;
+
+        while let (Some(ptr_a), Some(ptr_b)) = (node_a, node_b) {
+            let val_a = unsafe { (*ptr_a.as_ptr()).val.clone() };
+            let val_b = unsafe { (*ptr_b.as_ptr()).val.clone() };
+
+            if val_a <= val_b {
+                merged_list.add(val_a);
+                node_a = unsafe { (*ptr_a.as_ptr()).next };
+            } else {
+                merged_list.add(val_b);
+                node_b = unsafe { (*ptr_b.as_ptr()).next };
+            }
         }
+
+        // 将剩余的节点添加到新链表中
+        while let Some(ptr) = node_a {
+            let val = unsafe { (*ptr.as_ptr()).val.clone() };
+            merged_list.add(val);
+            node_a = unsafe { (*ptr.as_ptr()).next };
+        }
+
+        while let Some(ptr) = node_b {
+            let val = unsafe { (*ptr.as_ptr()).val.clone() };
+            merged_list.add(val);
+            node_b = unsafe { (*ptr.as_ptr()).next };
+        }
+
+        merged_list
 	}
 }
 
