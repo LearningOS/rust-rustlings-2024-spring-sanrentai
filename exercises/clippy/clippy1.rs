@@ -9,16 +9,20 @@
 // Execute `rustlings hint clippy1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+
 
 use std::f32;
 
 fn main() {
-    let pi = 3.14f32;
+    // π
+    let pi = f32::consts::PI;
+    // 半径
     let radius = 5.00f32;
 
+    // 面积 = π * r^2
     let area = pi * f32::powi(radius, 2);
 
+    // 输出面积
     println!(
         "The area of a circle with radius {:.2} is {:.5}!",
         radius, area
