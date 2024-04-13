@@ -38,6 +38,45 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.percolate_up(self.count);
+    }
+
+    // 插入新元素后，将该元素向上移动
+    // 参数 idx 表示要上浮的元素的索引
+    fn percolate_up(&mut self, mut idx: usize) {
+        let mut parent_idx; // 父节点的索引
+        while idx > 1 {
+            parent_idx = self.parent_idx(idx);
+            // 然后比较当前节点与其父节点的值
+            if (self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+                // 交换它们的位置
+                self.items.swap(idx, parent_idx);
+                // 当前节点的索引更新为父节点的索引，继续向上比较,到达堆的顶部为止
+                idx = parent_idx;
+            } else {
+                break;
+            }
+        }
+    }
+
+    // 删除根节点后，将最后一个元素向下移动
+    fn percolate_down(&mut self, mut idx: usize) {
+        // 检查当前节点是否有子节点
+        while self.children_present(idx) {
+            // 找到其中较小（或较大）的子节点
+            let smallest_child = self.smallest_child_idx(idx);
+            // 与当前节点进行比较
+            if (self.comparator)(&self.items[smallest_child], &self.items[idx]) {
+                // 交换它们的位置
+                self.items.swap(smallest_child, idx);
+                // 继续向下比较
+                idx = smallest_child;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +97,14 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        let left_child_idx = self.left_child_idx(idx);
+        let right_child_idx = self.right_child_idx(idx);
+
+        if right_child_idx > self.count || (self.comparator)(&self.items[left_child_idx], &self.items[right_child_idx]) {
+            left_child_idx
+        } else {
+            right_child_idx
+        }
     }
 }
 
@@ -85,7 +131,17 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.is_empty() {
+            return None;
+        }
+
+        let root = self.items.swap_remove(1);
+        self.count -= 1;
+        if self.count > 0 {
+            self.items.swap(1, self.count);
+            self.percolate_down(1);
+        }
+        Some(root)
     }
 }
 
